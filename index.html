@@ -1,0 +1,594 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Faraytodi Atmajaya | Interactive Dev Portfolio</title>
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- GSAP for scroll animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #050811;
+            color: #eef5ff;
+            overflow-x: hidden;
+            cursor: default;
+        }
+
+        /* Custom cursor (interactive) */
+        .cursor-dot {
+            width: 8px;
+            height: 8px;
+            background: #2dd4bf;
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.1s ease;
+            box-shadow: 0 0 8px #2dd4bf;
+        }
+        .cursor-outline {
+            width: 32px;
+            height: 32px;
+            border: 1.5px solid rgba(45,212,191,0.6);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9998;
+            transition: all 0.15s ease-out;
+            backdrop-filter: blur(2px);
+        }
+
+        /* Particle canvas */
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.5;
+        }
+
+        /* main container */
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* typography */
+        .glow-text {
+            text-shadow: 0 0 8px rgba(45,212,191,0.4);
+        }
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 2rem;
+            display: inline-block;
+            background: linear-gradient(120deg, #fff, #2dd4bf);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+        .section-sub {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #2dd4bf;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Hero section dengan typing */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+        .hero-content {
+            max-width: 800px;
+        }
+        .hero-badge {
+            background: rgba(45,212,191,0.15);
+            backdrop-filter: blur(8px);
+            padding: 0.3rem 1rem;
+            border-radius: 40px;
+            width: fit-content;
+            font-size: 0.8rem;
+            border: 1px solid rgba(45,212,191,0.4);
+            margin-bottom: 1.5rem;
+        }
+        .hero h1 {
+            font-size: 4.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1rem;
+        }
+        .typing-wrapper {
+            font-size: 1.7rem;
+            font-weight: 500;
+            margin: 1rem 0;
+            height: 4rem;
+        }
+        .typed-text {
+            color: #2dd4bf;
+            border-right: 3px solid #2dd4bf;
+            padding-right: 5px;
+        }
+        .hero-desc {
+            font-size: 1.1rem;
+            opacity: 0.8;
+            max-width: 600px;
+            margin: 1.5rem 0;
+        }
+        .btn-group {
+            display: flex;
+            gap: 1.2rem;
+            flex-wrap: wrap;
+        }
+        .btn-primary {
+            background: #2dd4bf;
+            color: #050811;
+            padding: 0.8rem 2rem;
+            border-radius: 40px;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px #2dd4bf;
+            background: #1bb0a0;
+        }
+        .btn-outline {
+            border: 1px solid #2dd4bf;
+            background: transparent;
+            padding: 0.8rem 2rem;
+            border-radius: 40px;
+            font-weight: 500;
+            transition: 0.3s;
+            color: white;
+            text-decoration: none;
+        }
+        .btn-outline:hover {
+            background: rgba(45,212,191,0.2);
+            transform: translateY(-3px);
+        }
+
+        /* cards grid */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        .project-card {
+            background: rgba(15, 25, 45, 0.6);
+            backdrop-filter: blur(12px);
+            border-radius: 28px;
+            padding: 1.8rem;
+            border: 1px solid rgba(45,212,191,0.2);
+            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            transform: translateY(0);
+            cursor: pointer;
+        }
+        .project-card:hover {
+            transform: translateY(-12px) scale(1.02);
+            border-color: #2dd4bf;
+            box-shadow: 0 25px 35px -15px rgba(45,212,191,0.3);
+            background: rgba(20, 32, 55, 0.8);
+        }
+        .project-icon {
+            font-size: 2.2rem;
+            color: #2dd4bf;
+            margin-bottom: 1rem;
+        }
+        .project-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+        .tag {
+            background: rgba(45,212,191,0.2);
+            padding: 0.2rem 0.8rem;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+        /* aktivitas */
+        .activ-card {
+            background: linear-gradient(135deg, #0b1120, #0a0f1a);
+            border-radius: 2rem;
+            padding: 1.5rem;
+            border-left: 4px solid #2dd4bf;
+            transition: 0.2s;
+        }
+        .skills-cloud {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .skill-chip {
+            background: #111a2e;
+            padding: 0.6rem 1.5rem;
+            border-radius: 60px;
+            font-weight: 500;
+            transition: all 0.2s;
+            border: 1px solid #2dd4bf30;
+        }
+        .skill-chip:hover {
+            background: #2dd4bf20;
+            transform: scale(1.05);
+            border-color: #2dd4bf;
+        }
+        .edu-item {
+            background: rgba(0,0,0,0.3);
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            backdrop-filter: blur(4px);
+        }
+        footer {
+            text-align: center;
+            padding: 3rem 0;
+            border-top: 1px solid rgba(45,212,191,0.2);
+            margin-top: 2rem;
+        }
+
+        /* scroll reveal style */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.8rem; }
+            .typing-wrapper { font-size: 1.2rem; height: 3rem; }
+            .container { padding: 0 1.2rem; }
+            .section-title { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="cursor-dot"></div>
+<div class="cursor-outline"></div>
+<canvas id="particle-canvas"></canvas>
+
+<div class="hero">
+    <div class="container">
+        <div class="hero-content">
+            <div class="hero-badge">
+                <i class="fas fa-code-branch"></i> backend · fullstack architect
+            </div>
+            <h1>Faraytodi <span class="glow-text">Atmajaya</span></h1>
+            <div class="typing-wrapper">
+                <span class="typed-text"></span><span class="cursor-blink">|</span>
+            </div>
+            <p class="hero-desc">Mahasiswa Teknik Informatika yang membangun solusi digital end-to-end. Spesialisasi backend REST API, database architecture, dan mobile integration. Siap menciptakan produk yang scalable & impactful.</p>
+            <div class="btn-group">
+                <a href="#projects" class="btn-primary"><i class="fas fa-arrow-down"></i> Explore Work</a>
+                <a href="#contact" class="btn-outline"><i class="fas fa-paper-plane"></i> Contact Me</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Profil -->
+    <section id="profile" class="reveal" style="margin-top: 2rem;">
+        <div class="section-sub">// tentang saya</div>
+        <h2 class="section-title">/profile.context</h2>
+        <div style="background: rgba(12,22,40,0.6); backdrop-filter: blur(8px); border-radius: 2rem; padding: 2rem; border: 1px solid #2dd4bf30;">
+            <p style="font-size: 1.05rem; line-height: 1.6;">Mahasiswa Teknik Informatika berfokus pada Fullstack Web Development dengan spesialisasi Backend. Berpengalaman dalam perancangan database, REST API, integrasi payment gateway, serta pengembangan mobile React Native. Terbiasa bekerja secara kolaboratif dan berorientasi pada solusi yang efisien. Memiliki passion terhadap arsitektur aplikasi yang aman, scalable, dan maintainable.</p>
+            <div style="display: flex; gap: 1.5rem; flex-wrap: wrap; margin-top: 1.5rem;">
+                <span><i class="fas fa-map-pin"></i> Jember, Indonesia</span>
+                <span><i class="fas fa-envelope"></i> E41230453@student.polije.ac.id</span>
+                <span><i class="fas fa-phone-alt"></i> +62 823-3300-0472</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pendidikan -->
+    <section class="reveal" style="margin-top: 4rem;">
+        <div class="section-sub">// academic</div>
+        <h2 class="section-title">/education.path</h2>
+        <div class="edu-item">
+            <h3 style="font-size: 1.5rem;">Politeknik Negeri Jember</h3>
+            <div style="display: flex; justify-content: space-between; flex-wrap:wrap;"><strong>D4 Teknik Informatika</strong> <span class="tag">IPK 3.75</span></div>
+            <p style="margin-top: 0.5rem;">Mata kuliah relevan: Workshop Framework Web, Pengujian Perangkat Lunak, Proyek Sistem Informasi, Developer Operasional.</p>
+            <div class="tag" style="display: inline-block;">Agustus 2023 - Sekarang</div>
+        </div>
+        <div class="edu-item">
+            <h3>SMA Wahidiyah Kota Kediri</h3>
+            <p>Jurusan IPA | Rata-rata 80,20 <span class="tag">2020-2023</span></p>
+        </div>
+    </section>
+
+    <!-- Projects (Pengalaman) interaktif -->
+    <section id="projects" class="reveal" style="margin-top: 4rem;">
+        <div class="section-sub">// real code, real impact</div>
+        <h2 class="section-title">/featured.projects</h2>
+        <div class="projects-grid">
+            <!-- Project 1 -->
+            <div class="project-card">
+                <div class="project-icon"><i class="fas fa-laptop-code"></i></div>
+                <div class="project-title">D'kost Desktop</div>
+                <div class="project-tags"><span class="tag">Java</span><span class="tag">MySQL</span><span class="tag">NetBeans</span></div>
+                <p>Aplikasi desktop untuk manajemen kost dengan database terintegrasi, validasi input, dan keamanan data.</p>
+                <div style="margin-top: 1rem;"><i class="fas fa-calendar-alt"></i> 2023 · Final Project S1</div>
+            </div>
+            <div class="project-card">
+                <div class="project-icon"><i class="fas fa-chart-line"></i></div>
+                <div class="project-title">D'kost Optimization</div>
+                <div class="project-tags"><span class="tag">Query Tuning</span><span class="tag">Redesign DB</span></div>
+                <p>Optimasi performa aplikasi, debugging, dan redesign database untuk skalabilitas lebih baik.</p>
+                <div><i class="fas fa-calendar-alt"></i> 2024 · S2</div>
+            </div>
+            <div class="project-card">
+                <div class="project-icon"><i class="fas fa-heartbeat"></i></div>
+                <div class="project-title">ADEK (Monitoring Diet)</div>
+                <div class="project-tags"><span class="tag">Laravel</span><span class="tag">REST API</span><span class="tag">Sanctum</span></div>
+                <p>Backend RESTful API untuk integrasi web & mobile, autentikasi, error handling, dan integrasi IoT.</p>
+                <div><i class="fas fa-calendar-alt"></i> 2024-2025</div>
+            </div>
+            <div class="project-card">
+                <div class="project-icon"><i class="fas fa-credit-card"></i></div>
+                <div class="project-title">ADEK Premium</div>
+                <div class="project-tags"><span class="tag">Payment Gateway</span><span class="tag">Role/Permission</span></div>
+                <p>Integrasi payment gateway, manajemen produk, transaksi aman, serta role & permission system.</p>
+                <div><i class="fas fa-calendar-alt"></i> Semester 4</div>
+            </div>
+            <div class="project-card">
+                <div class="project-icon"><i class="fas fa-plane-departure"></i></div>
+                <div class="project-title">Bandara Malang · Chatbot</div>
+                <div class="project-tags"><span class="tag">Laravel API</span><span class="tag">Chatbot</span></div>
+                <p>Backend layanan bandara + chatbot 24 jam, integrasi frontend, validasi data client-server.</p>
+                <div><i class="fas fa-calendar-alt"></i> Project Client</div>
+            </div>
+            <div class="project-card">
+                <div class="project-icon"><i class="fas fa-mobile-alt"></i></div>
+                <div class="project-title">MBKM · React Native</div>
+                <div class="project-tags"><span class="tag">React Native</span><span class="tag">QR Scan</span><span class="tag">Telemetry</span></div>
+                <p>Fullstack mobile development: REST API, dashboard monitoring, IoT device integration, testing & debugging.</p>
+                <div><i class="fas fa-calendar-alt"></i> 2025</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Aktivitas Organisasi -->
+    <section class="reveal" style="margin-top: 4rem;">
+        <div class="section-sub">// leadership & kolaborasi</div>
+        <h2 class="section-title">/activities.engine</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px,1fr)); gap: 1.5rem;">
+            <div class="activ-card">
+                <i class="fas fa-building" style="font-size: 2rem; color:#2dd4bf;"></i>
+                <h3 style="margin: 0.8rem 0;">HMJ TI Polije</h3>
+                <p>Facilities and Infrastructure Bureau · 2024</p>
+                <ul style="margin-left: 1.2rem; margin-top: 0.5rem;">
+                    <li>Mengelola sosialiasi mahasiswa baru</li>
+                    <li>Administrasi peminjaman barang & inventaris</li>
+                    <li>Koordinasi internal/eksternal fasilitas</li>
+                </ul>
+            </div>
+            <div class="activ-card">
+                <i class="fas fa-water" style="font-size: 2rem; color:#2dd4bf;"></i>
+                <h3>MBKM UMKM Bahari Samudra</h3>
+                <p>Fullstack Mobile Developer · 2025</p>
+                <ul style="margin-left: 1.2rem;">
+                    <li>React Native + RESTful API</li>
+                    <li>Implementasi QR scanning & IoT monitoring</li>
+                    <li>Optimasi performa & kolaborasi tim</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technical Skills dengan interaksi hover -->
+    <section class="reveal" style="margin-top: 4rem;">
+        <div class="section-sub">// expertise arsenal</div>
+        <h2 class="section-title">/tech.stack</h2>
+        <div style="background: rgba(0,0,0,0.3); border-radius: 2rem; padding: 2rem;">
+            <div>
+                <h3 style="margin-bottom: 1rem;"><i class="fas fa-code"></i> Languages & Frameworks</h3>
+                <div class="skills-cloud">
+                    <span class="skill-chip">Java</span><span class="skill-chip">SQL</span><span class="skill-chip">HTML/CSS</span><span class="skill-chip">JavaScript</span>
+                    <span class="skill-chip">Laravel</span><span class="skill-chip">React Native</span><span class="skill-chip">Flutter</span>
+                </div>
+            </div>
+            <div style="margin-top: 1.5rem;">
+                <h3><i class="fas fa-tools"></i> Tools & Platforms</h3>
+                <div class="skills-cloud">
+                    <span class="skill-chip">NetBeans</span><span class="skill-chip">VS Code</span><span class="skill-chip">Git/GitHub</span><span class="skill-chip">Laragon</span>
+                    <span class="skill-chip">Postman</span><span class="skill-chip">Figma</span>
+                </div>
+            </div>
+            <div style="margin-top: 1.5rem;">
+                <h3><i class="fas fa-microchip"></i> Specialization</h3>
+                <div class="skills-cloud">
+                    <span class="skill-chip">Desktop (Java)</span><span class="skill-chip">Web (Laravel)</span><span class="skill-chip">Mobile (React/Flutter)</span>
+                    <span class="skill-chip">REST API Design</span><span class="skill-chip">DB Architecture</span><span class="skill-chip">Auth & Security</span>
+                </div>
+            </div>
+            <div style="margin-top: 1.5rem;">
+                <h3><i class="fas fa-language"></i> Bahasa</h3>
+                <div class="skills-cloud"><span class="skill-chip">Indonesia (Native)</span><span class="skill-chip">English (Basic)</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact / CTA -->
+    <section id="contact" class="reveal" style="margin: 5rem 0 3rem;">
+        <div style="background: linear-gradient(115deg, #0a1122, #03060e); border-radius: 2.5rem; padding: 2.5rem; text-align: center; border: 1px solid #2dd4bf30;">
+            <i class="fas fa-paper-plane" style="font-size: 2.5rem; color:#2dd4bf;"></i>
+            <h2 style="font-size: 2rem; margin: 1rem 0;">Kolaborasi? <span class="glow-text">Hubungi saya.</span></h2>
+            <p>Siap berkontribusi dalam proyek digital yang berdampak. Mari diskusikan ide Anda.</p>
+            <div style="display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap; margin-top: 2rem;">
+                <a href="mailto:E41230453@student.polije.ac.id" class="btn-primary"><i class="fas fa-envelope"></i> Email Me</a>
+                <a href="#" class="btn-outline"><i class="fab fa-github"></i> GitHub</a>
+                <a href="#" class="btn-outline"><i class="fab fa-linkedin"></i> LinkedIn</a>
+            </div>
+        </div>
+    </section>
+</div>
+
+<footer>
+    <div class="container">
+        <p>© 2025 Faraytodi Atmajaya — Built with interactive canvas, GSAP, and modern edge</p>
+        <p><i class="fas fa-terminal"></i> backend first, always delivering value</p>
+    </div>
+</footer>
+
+<script>
+    // Interactive custom cursor
+    const cursorDot = document.querySelector('.cursor-dot');
+    const cursorOutline = document.querySelector('.cursor-outline');
+    window.addEventListener('mousemove', (e) => {
+        cursorDot.style.transform = `translate(${e.clientX - 4}px, ${e.clientY - 4}px)`;
+        cursorOutline.style.transform = `translate(${e.clientX - 16}px, ${e.clientY - 16}px)`;
+    });
+    document.querySelectorAll('a, button, .project-card, .skill-chip').forEach(el => {
+        el.addEventListener('mouseenter', () => {
+            cursorOutline.style.transform = `scale(1.5)`;
+            cursorOutline.style.borderColor = '#fff';
+        });
+        el.addEventListener('mouseleave', () => {
+            cursorOutline.style.transform = `scale(1)`;
+            cursorOutline.style.borderColor = 'rgba(45,212,191,0.6)';
+        });
+    });
+
+    // Particle Background (Interactive & Keren)
+    const canvas = document.getElementById('particle-canvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    let particleCount = 120;
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    function createParticles() {
+        particles = [];
+        for (let i = 0; i < particleCount; i++) {
+            particles.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                radius: Math.random() * 2.5 + 1,
+                alpha: Math.random() * 0.5 + 0.2,
+                speedX: (Math.random() - 0.5) * 0.3,
+                speedY: (Math.random() - 0.5) * 0.2,
+                color: `rgba(45, 212, 191, ${Math.random() * 0.6})`
+            });
+        }
+    }
+    function drawParticles() {
+        if (!ctx) return;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for (let p of particles) {
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+            ctx.fillStyle = p.color;
+            ctx.fill();
+            p.x += p.speedX;
+            p.y += p.speedY;
+            if (p.x < 0) p.x = canvas.width;
+            if (p.x > canvas.width) p.x = 0;
+            if (p.y < 0) p.y = canvas.height;
+            if (p.y > canvas.height) p.y = 0;
+        }
+        requestAnimationFrame(drawParticles);
+    }
+    window.addEventListener('resize', () => {
+        resizeCanvas();
+        createParticles();
+    });
+    resizeCanvas();
+    createParticles();
+    drawParticles();
+
+    // Typing Effect
+    const roles = ["Backend Specialist", "Laravel Alchemist", "REST API Architect", "React Native Dev", "Fullstack Enthusiast"];
+    let roleIndex = 0;
+    let charIndex = 0;
+    let isDeleting = false;
+    const typedTextSpan = document.querySelector('.typed-text');
+    const cursorBlink = document.querySelector('.cursor-blink');
+    function typeEffect() {
+        const currentRole = roles[roleIndex];
+        if (isDeleting) {
+            typedTextSpan.textContent = currentRole.substring(0, charIndex-1);
+            charIndex--;
+        } else {
+            typedTextSpan.textContent = currentRole.substring(0, charIndex+1);
+            charIndex++;
+        }
+        if (!isDeleting && charIndex === currentRole.length) {
+            isDeleting = true;
+            setTimeout(typeEffect, 1800);
+            return;
+        }
+        if (isDeleting && charIndex === 0) {
+            isDeleting = false;
+            roleIndex = (roleIndex+1) % roles.length;
+            setTimeout(typeEffect, 300);
+            return;
+        }
+        let speed = isDeleting ? 50 : 100;
+        setTimeout(typeEffect, speed);
+    }
+    typeEffect();
+    setInterval(() => {
+        if (cursorBlink) cursorBlink.style.opacity = (cursorBlink.style.opacity === '0' ? '1' : '0');
+    }, 500);
+
+    // GSAP ScrollTrigger reveal
+    gsap.registerPlugin(ScrollTrigger);
+    const reveals = document.querySelectorAll('.reveal');
+    reveals.forEach(el => {
+        gsap.fromTo(el, { opacity: 0, y: 50 }, {
+            opacity: 1,
+            y: 0,
+            duration: 0.8,
+            scrollTrigger: {
+                trigger: el,
+                start: "top 85%",
+                toggleActions: "play none none reverse"
+            }
+        });
+    });
+    // additional animation for project cards on hover scale handled in CSS
+</script>
+</body>
+</html>
