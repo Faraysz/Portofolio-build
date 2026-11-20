@@ -1,77 +1,49 @@
-# Personal Portfolio Website
+<div align="center">
 
-Website portfolio sederhana yang dibuat menggunakan **HTML dan CSS** untuk menampilkan informasi pribadi, project, dan kontak secara clean dan minimalis.
+# 💼 Personal Portfolio Build
 
-## 📌 Deskripsi
+**Website portofolio pribadi yang clean, minimalis, dan super ringan untuk showcase profil & proyek**
 
-Project ini merupakan website portfolio sederhana yang bertujuan untuk memperkenalkan profil pribadi, menampilkan beberapa project yang pernah dibuat, serta menyediakan informasi kontak.
+[![HTML5](https://img.shields.io/badge/HTML5-100%25-E34F26?style=for-the-badge&logo=html5&logoColor=white)](https://developer.mozilla.org/id/docs/Web/HTML)
+[![CSS3](https://img.shields.io/badge/CSS3-Custom%20Styling-1572B6?style=for-the-badge&logo=css3&logoColor=white)](https://developer.mozilla.org/id/docs/Web/CSS)
+[![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Auto%20Deploy-222222?style=for-the-badge&logo=githubpages&logoColor=white)](https://pages.github.com/)
+[![License](https://img.shields.io/badge/License-MIT-4CAF50?style=for-the-badge)](LICENSE)
 
-Website ini dirancang dengan tampilan minimalis agar mudah dibaca dan ringan untuk dijalankan di berbagai perangkat.
-
-## 🚀 Fitur
-
-* Halaman perkenalan (About Me)
-* Daftar project
-* Informasi kontak
-* Desain sederhana dan responsif
-* Struktur kode yang mudah dipahami untuk pemula
-
-## 🛠️ Teknologi yang Digunakan
-
-* HTML5
-* CSS3
-
-## 📂 Struktur Project
-
-```
-portfolio-website
-│
-├── index.html
-└── README.md
-```
-
-## 💻 Cara Menjalankan Project
-
-1. Clone repository ini
-
-```
-git clone https://github.com/username/portfolio-website.git
-```
-
-2. Masuk ke folder project
-
-```
-cd portfolio-website
-```
-
-3. Buka file `index.html` di browser
-
-atau bisa menggunakan **Live Server di VSCode**.
-
-## 📸 Tampilan Website
-
-Website ini menampilkan beberapa bagian utama:
-
-* Header / Perkenalan
-* Tentang Saya
-* Daftar Project
-* Kontak
-
-## 🎯 Tujuan Project
-
-Project ini dibuat untuk:
-
-* Belajar dasar pembuatan website
-* Membuat portfolio online sederhana
-* Melatih struktur HTML dan CSS
-
-## 📬 Kontak
-
-Jika ingin terhubung atau berdiskusi:
-
-LinkedIn : [www.linkedin.com/in/faraytodi-atmajaya-b08a351b5](https://www.linkedin.com/in/faraytodi-atmajaya-b08a351b5)
-Email : [faraytodiatmajaya@gmail.com](faraytodiatmajaya@gmail.com)
+</div>
 
 ---
 
-⭐ Jika project ini membantu atau menginspirasi, jangan lupa beri **star** pada repository ini.
+## 🎯 Tentang Proyek Ini
+
+**Portofolio-build** adalah website portofolio statis yang dirancang dengan filosofi *"Less is More"*. 
+
+Dibangun sepenuhnya menggunakan **HTML5 dan CSS3 murni** (tanpa framework berat seperti Bootstrap atau Tailwind), website ini menjamin performa muat yang sangat cepat, kode yang mudah dipahami, dan struktur yang bersih. Proyek ini sangat cocok sebagai fondasi portofolio online untuk keperluan lamaran magang, kerja, atau sekadar membangun personal branding di dunia digital.
+
+---
+
+## ✨ Fitur Utama
+
+| Fitur | Deskripsi |
+|---------|-------------|
+| ⚡ **Super Ringan & Cepat** | 100% HTML/CSS murni tanpa JavaScript berat, memastikan skor performa (Lighthouse) mendekati sempurna. |
+| 📱 **Fully Responsive** | Tata letak yang beradaptasi dengan mulus di perangkat desktop, tablet, maupun smartphone. |
+| 🚀 **Siap GitHub Pages** | Dilengkapi workflow GitHub Actions, sehingga setiap perubahan yang di-*push* akan otomatis ter-deploy. |
+| 🧹 **Kode Bersih & Terstruktur** | Struktur kode yang sangat mudah dibaca, dimodifikasi, dan dikembangkan, bahkan untuk pemula. |
+| 🎨 **Desain Minimalis** | Fokus pada konten (profil, proyek, kontak) dengan tampilan yang bersih, modern, dan tidak berantakan. |
+
+---
+
+## 📂 Struktur Proyek
+
+Proyek ini dirancang sesederhana mungkin agar mudah dikelola:
+
+```text
+Portofolio-build/
+├── .github/
+│   └── workflows/
+│       └── github-pages.yml    # Workflow otomatis untuk deploy ke GitHub Pages
+├── index.html                  # Halaman utama portofolio (berisi struktur & konten)
+├── style.css                   # (Opsional/Jika ada) File styling eksternal
+├── .gitignore                  # Konfigurasi file yang diabaikan Git
+├── LICENSE                     # Lisensi MIT
+└── README.md                   # Dokumentasi utama ini
